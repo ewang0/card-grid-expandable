@@ -8,7 +8,7 @@ type CardData = {
   id: string
   title: string
   icon: string
-  percentage: number
+  percentage?: number
   options?: { name: string; percentage: number }[]
   chance?: boolean
   winner?: string
@@ -215,7 +215,7 @@ export default function ExpandingCardGrid() {
                   {card.chance && (
                     <motion.div
                       layout="position"
-                      className={`rounded-full px-2 py-1 text-xs font-semibold flex items-center ${card.percentage > 50 ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
+                      className={`rounded-full px-2 py-1 text-xs font-semibold flex items-center ${card.percentage && card.percentage > 50 ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
                     >
                       {card.percentage}%<span className="ml-1 text-xs">chance</span>
                     </motion.div>
@@ -224,7 +224,7 @@ export default function ExpandingCardGrid() {
                   {card.winner && (
                     <motion.div
                       layout="position"
-                      className={`rounded-full px-2 py-1 text-xs font-semibold flex items-center ${card.percentage > 50 ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
+                      className={`rounded-full px-2 py-1 text-xs font-semibold flex items-center ${card.percentage && card.percentage > 50 ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
                     >
                       {card.percentage}%<span className="ml-1 text-xs">{card.winner}</span>
                     </motion.div>
@@ -250,7 +250,7 @@ export default function ExpandingCardGrid() {
                         isExpanded ? "max-h-[300px]" : "max-h-[120px]"
                       }`}
                     >
-                      {card.options.map((option, index) => (
+                      {card.options?.map((option, index) => (
                         <motion.div key={index} layout="position" className="flex justify-between items-center mb-2">
                           <span className="text-sm truncate max-w-[60%]">{option.name}</span>
                           <div className="flex items-center gap-2 flex-shrink-0">
