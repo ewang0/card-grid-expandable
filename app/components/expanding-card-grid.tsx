@@ -284,26 +284,18 @@ export default function ExpandingCardGrid() {
                 )}
               </motion.div>
 
-              {/* Footer */}
-              <motion.div layout="position" className="flex justify-between items-center mt-4 text-gray-400 text-xs">
-                <span>
-                  {card.volume} {card.monthly && "Monthly"}
-                </span>
-                <div className="flex gap-2">
-                  <RefreshCw size={14} />
-                  <Bookmark size={14} />
-                </div>
-              </motion.div>
-
-              {/* Expanded content */}
+              {/* Expanded content - moved before footer */}
               <AnimatePresence mode="wait">
                 {isExpanded && !hasOptions && (
                   <motion.div
                     key="expanded-content"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: 0.2,
+                      delay: 0.3, // Delay to match the card expansion duration (300ms)
+                    }}
                     className="mt-4"
                   >
                     <div className="text-sm text-gray-300">
@@ -315,6 +307,17 @@ export default function ExpandingCardGrid() {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Footer - now after expanded content */}
+              <motion.div layout="position" className="flex justify-between items-center mt-4 text-gray-400 text-xs">
+                <span>
+                  {card.volume} {card.monthly && "Monthly"}
+                </span>
+                <div className="flex gap-2">
+                  <RefreshCw size={14} />
+                  <Bookmark size={14} />
+                </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )
