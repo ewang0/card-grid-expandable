@@ -2,7 +2,11 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowUpRight, ArrowDownRight, Bookmark, RefreshCw, Maximize2, Minimize2 } from "lucide-react"
+import { ArrowUpRight, ArrowDownRight, Bookmark, Gift, Maximize2, Minimize2 } from "lucide-react"
+import dynamic from "next/dynamic"
+
+// Dynamically import the chart component with no SSR to avoid hydration issues
+const PriceChart = dynamic(() => import("./price-chart"), { ssr: false })
 
 type CardData = {
   id: string
@@ -15,6 +19,7 @@ type CardData = {
   volume: string
   monthly?: boolean
   category: string
+  change?: number
 }
 
 export default function ExpandingCardGrid() {
@@ -28,12 +33,12 @@ export default function ExpandingCardGrid() {
   const generateMoreOptions = (baseOptions: { name: string; percentage: number }[], total = 10) => {
     const result = [...baseOptions]
 
-    // Add more options until we reach the desired total
+    // Add more options with fixed percentages instead of random ones
     while (result.length < total) {
       const lastIndex = result.length
       result.push({
         name: `Additional Option ${lastIndex + 1}`,
-        percentage: Math.floor(Math.random() * 30) + 1, // Random percentage between 1-30
+        percentage: 10 + (lastIndex % 20), // Deterministic value instead of random
       })
     }
 
@@ -48,7 +53,8 @@ export default function ExpandingCardGrid() {
       percentage: 62,
       chance: true,
       volume: "$2m Vol.",
-      category: "Economics"
+      category: "Economics",
+      change: 43,
     },
     {
       id: "2",
@@ -57,7 +63,8 @@ export default function ExpandingCardGrid() {
       percentage: 52,
       winner: "Florida",
       volume: "$314k Vol.",
-      category: "Sports"
+      category: "Sports",
+      change: 12,
     },
     {
       id: "3",
@@ -72,7 +79,7 @@ export default function ExpandingCardGrid() {
         12,
       ),
       volume: "$36m Vol.",
-      category: "Politics"
+      category: "Politics",
     },
     {
       id: "4",
@@ -88,7 +95,7 @@ export default function ExpandingCardGrid() {
       ),
       volume: "$17m Vol.",
       monthly: true,
-      category: "Economics"
+      category: "Economics",
     },
     {
       id: "5",
@@ -103,7 +110,7 @@ export default function ExpandingCardGrid() {
         15,
       ),
       volume: "$4m Vol.",
-      category: "Politics"
+      category: "Politics",
     },
     {
       id: "6",
@@ -118,7 +125,7 @@ export default function ExpandingCardGrid() {
         9,
       ),
       volume: "$59k Vol.",
-      category: "Politics"
+      category: "Politics",
     },
     {
       id: "7",
@@ -133,7 +140,7 @@ export default function ExpandingCardGrid() {
         10,
       ),
       volume: "$140k Vol.",
-      category: "Trade"
+      category: "Trade",
     },
     {
       id: "8",
@@ -148,7 +155,7 @@ export default function ExpandingCardGrid() {
         11,
       ),
       volume: "$549k Vol.",
-      category: "Trade"
+      category: "Trade",
     },
     {
       id: "9",
@@ -157,7 +164,8 @@ export default function ExpandingCardGrid() {
       percentage: 34,
       chance: true,
       volume: "$501k Vol.",
-      category: "Politics"
+      category: "Politics",
+      change: -8,
     },
     {
       id: "10",
@@ -166,7 +174,8 @@ export default function ExpandingCardGrid() {
       percentage: 56,
       chance: true,
       volume: "$26k Vol.",
-      category: "Trade"
+      category: "Trade",
+      change: 15,
     },
     {
       id: "11",
@@ -181,7 +190,7 @@ export default function ExpandingCardGrid() {
         14,
       ),
       volume: "$5m Vol.",
-      category: "Economics"
+      category: "Economics",
     },
     {
       id: "12",
@@ -190,7 +199,8 @@ export default function ExpandingCardGrid() {
       percentage: 25,
       chance: true,
       volume: "$6m Vol.",
-      category: "Geopolitics"
+      category: "Geopolitics",
+      change: -3,
     },
   ]
 
@@ -204,25 +214,19 @@ export default function ExpandingCardGrid() {
           <motion.div
             key={card.id}
             layout
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-              layout: { duration: 0.3 },
-            }}
             className="bg-gray-800 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
             style={{
               gridRow: isExpanded ? "span 2" : "span 1",
-              height: isExpanded ? "auto" : "220px", // Fixed height for non-expanded cards
+              height: isExpanded ? "456px" : "220px", // Increased height to fully span 2 rows
             }}
           >
             <motion.div className="p-4 h-full flex flex-col" layout>
               {/* Header */}
               <motion.div layout="position" className="flex items-start justify-between mb-3 min-h-[4rem]">
                 <div className="flex items-center gap-2 max-w-[80%] group">
-                  <img 
-                    src={card.imageUrl} 
-                    alt="" 
+                  <img
+                    src={card.imageUrl || "/placeholder.svg"}
+                    alt=""
                     className="w-10 h-10 rounded-md flex-shrink-0 object-cover self-start mt-0.5"
                   />
                   <div className="flex flex-col">
@@ -234,7 +238,10 @@ export default function ExpandingCardGrid() {
               </motion.div>
 
               {/* Content */}
-              <motion.div layout="position" className="flex-grow">
+              <motion.div
+                layout="position"
+                className={`flex-grow relative ${isExpanded ? "overflow-y-auto" : ""}`}
+              >
                 {hasOptions ? (
                   <div className="relative">
                     {/* Scrollable options container with different max-height based on expanded state */}
@@ -275,43 +282,70 @@ export default function ExpandingCardGrid() {
                     </motion.div>
                   </motion.div>
                 )}
-              </motion.div>
 
-              {/* Expanded content - moved before footer */}
-              <AnimatePresence mode="wait">
-                {isExpanded && !hasOptions && (
-                  <motion.div
-                    key="expanded-content"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    layout="position"
-                    className="mt-4"
-                  >
-                    <div className="text-sm text-gray-300">
-                      <p>Additional details about this prediction market would appear here when expanded.</p>
-                      <p className="mt-2">
-                        Historical data, related markets, and other insights could be displayed in this expanded view.
-                      </p>
-                    </div>
-                  </motion.div>
+                {/* Expanded content */}
+                <AnimatePresence mode="wait">
+                  {isExpanded && !hasOptions && (
+                    <motion.div
+                      key="expanded-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-x-0 top-[80px] bottom-[10px] overflow-y-auto px-2"
+                    >
+                      {/* Price chart for cards with percentage */}
+                      {card.percentage && (
+                        <div className="h-[280px]">
+                          <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
+                        </div>
+                      )}
+
+                      <div className="mt-4 text-sm text-gray-300">
+                        <p>Additional details about this prediction market would appear here when expanded.</p>
+                        <p className="mt-2">
+                          Historical data, related markets, and other insights could be displayed in this expanded view.
+                        </p>
+                        <p className="mt-2">
+                          The card has a fixed height of 2 rows in the grid, and content will scroll if it exceeds this
+                          height.
+                        </p>
+                        <p className="mt-2">
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget aliquam
+                          ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl.
+                        </p>
+                      </div>
+                      
+                      {/* Add padding at the bottom to ensure content doesn't get cut off by the shadow */}
+                      <div className="h-8"></div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Shadow at the bottom of scrollable content - keep this outside the AnimatePresence */}
+                {isExpanded && (
+                  <div className="absolute bottom-[10px] left-0 right-0 h-8 bg-gradient-to-t from-gray-800 to-transparent pointer-events-none"></div>
                 )}
-              </AnimatePresence>
+              </motion.div>
 
               {/* Footer - now after expanded content */}
               <motion.div layout="position" className="flex justify-between items-center mt-4 text-gray-400 text-xs">
                 <span>
                   {card.volume} {card.monthly && "Monthly"}
                 </span>
-                <div className="flex gap-2">
-                  <RefreshCw size={14} />
-                  <Bookmark size={14} />
+                <div className="flex gap-1">
+                  <div className="hover:bg-gray-700 p-0.5 rounded cursor-pointer">
+                    <Gift size={15} />
+                  </div>
+                  <div className="hover:bg-gray-700 p-0.5 rounded cursor-pointer">
+                    <Bookmark size={15} />
+                  </div>
                   <button
                     onClick={() => toggleExpand(card.id)}
-                    className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                    className="text-gray-400 hover:text-white hover:bg-gray-700 p-0.5 rounded transition-colors flex-shrink-0 cursor-pointer"
                     aria-label={isExpanded ? "Collapse card" : "Expand card"}
                   >
-                    {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                    {isExpanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
                   </button>
                 </div>
               </motion.div>
@@ -322,4 +356,3 @@ export default function ExpandingCardGrid() {
     </div>
   )
 }
-
