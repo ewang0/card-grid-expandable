@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowUpRight, ArrowDownRight, Bookmark, RefreshCw, Maximize2, Minimize2 } from "lucide-react"
+import { ArrowUpRight, ArrowDownRight, Bookmark, Gift, Maximize2, Minimize2 } from "lucide-react"
 
 type CardData = {
   id: string
@@ -303,15 +303,19 @@ export default function ExpandingCardGrid() {
                 <span>
                   {card.volume} {card.monthly && "Monthly"}
                 </span>
-                <div className="flex gap-2">
-                  <RefreshCw size={14} />
-                  <Bookmark size={14} />
+                <div className="flex gap-1">
+                  <div className="hover:bg-gray-700 p-0.5 rounded cursor-pointer">
+                    <Gift size={15} />
+                  </div>
+                  <div className="hover:bg-gray-700 p-0.5 rounded cursor-pointer">
+                    <Bookmark size={15} />
+                  </div>
                   <button
                     onClick={() => toggleExpand(card.id)}
-                    className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                    className="text-gray-400 hover:text-white hover:bg-gray-700 p-0.5 rounded transition-colors flex-shrink-0 cursor-pointer"
                     aria-label={isExpanded ? "Collapse card" : "Expand card"}
                   >
-                    {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                    {isExpanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
                   </button>
                 </div>
               </motion.div>
