@@ -210,7 +210,7 @@ export default function ExpandingCardGrid() {
               damping: 30,
               layout: { duration: 0.3 },
             }}
-            className="bg-gray-800 rounded-lg overflow-hidden transition-shadow hover:shadow-lg"
+            className="bg-gray-800 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
             style={{
               gridRow: isExpanded ? "span 2" : "span 1",
               height: isExpanded ? "auto" : "220px", // Fixed height for non-expanded cards
@@ -218,48 +218,18 @@ export default function ExpandingCardGrid() {
           >
             <motion.div className="p-4 h-full flex flex-col" layout>
               {/* Header */}
-              <motion.div layout="position" className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-2 max-w-[70%]">
+              <motion.div layout="position" className="flex items-start justify-between mb-3 min-h-[4rem]">
+                <div className="flex items-center gap-2 max-w-[80%] group">
                   <img 
                     src={card.imageUrl} 
                     alt="" 
-                    className="w-10 h-10 rounded-md flex-shrink-0 object-cover"
+                    className="w-10 h-10 rounded-md flex-shrink-0 object-cover self-start mt-0.5"
                   />
-                  <div className="flex flex-col gap-0.5">
-                    {/* Category Badge */}
-                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-700/70 text-gray-300 w-fit">
-                      {card.category}
-                    </span>
-                    <h3 className="font-medium text-sm truncate">{card.title}</h3>
+                  <div className="flex flex-col">
+                    <h3 className="font-bold text-sm line-clamp-2 group-hover:line-clamp-none transition-all">
+                      {card.title}
+                    </h3>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {card.chance && (
-                    <motion.div
-                      layout="position"
-                      className={`rounded-full px-2 py-1 text-xs font-semibold flex items-center ${card.percentage && card.percentage > 50 ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
-                    >
-                      {card.percentage}%<span className="ml-1 text-xs">chance</span>
-                    </motion.div>
-                  )}
-
-                  {card.winner && (
-                    <motion.div
-                      layout="position"
-                      className={`rounded-full px-2 py-1 text-xs font-semibold flex items-center ${card.percentage && card.percentage > 50 ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
-                    >
-                      {card.percentage}%<span className="ml-1 text-xs">{card.winner}</span>
-                    </motion.div>
-                  )}
-
-                  <button
-                    onClick={() => toggleExpand(card.id)}
-                    className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
-                    aria-label={isExpanded ? "Collapse card" : "Expand card"}
-                  >
-                    {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-                  </button>
                 </div>
               </motion.div>
 
@@ -270,17 +240,17 @@ export default function ExpandingCardGrid() {
                     {/* Scrollable options container with different max-height based on expanded state */}
                     <div
                       className={`overflow-y-auto pr-1 transition-all duration-300 ${
-                        isExpanded ? "max-h-[300px]" : "max-h-[120px]"
+                        isExpanded ? "max-h-[300px]" : "max-h-[80px]"
                       }`}
                     >
                       {card.options?.map((option, index) => (
-                        <motion.div key={index} layout="position" className="flex justify-between items-center mb-2">
+                        <motion.div key={index} layout="position" className="flex justify-between items-center mb-1.5">
                           <span className="text-sm truncate max-w-[60%]">{option.name}</span>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className="font-semibold text-sm">{option.percentage}%</span>
-                            <div className="flex gap-1">
-                              <span className="text-xs px-1 rounded bg-green-900/30 text-green-400">Yes</span>
-                              <span className="text-xs px-1 rounded bg-red-900/30 text-red-400">No</span>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <span className="font-semibold text-xs">{option.percentage}%</span>
+                            <div className="flex gap-0.5">
+                              <span className="text-xs px-1 rounded bg-green-900/30 text-green-400">Y</span>
+                              <span className="text-xs px-1 rounded bg-red-900/30 text-red-400">N</span>
                             </div>
                           </div>
                         </motion.div>
@@ -336,6 +306,13 @@ export default function ExpandingCardGrid() {
                 <div className="flex gap-2">
                   <RefreshCw size={14} />
                   <Bookmark size={14} />
+                  <button
+                    onClick={() => toggleExpand(card.id)}
+                    className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                    aria-label={isExpanded ? "Collapse card" : "Expand card"}
+                  >
+                    {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                  </button>
                 </div>
               </motion.div>
             </motion.div>
