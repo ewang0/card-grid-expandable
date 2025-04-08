@@ -14,6 +14,7 @@ type CardData = {
   winner?: string
   volume: string
   monthly?: boolean
+  category: string
 }
 
 export default function ExpandingCardGrid() {
@@ -47,6 +48,7 @@ export default function ExpandingCardGrid() {
       percentage: 62,
       chance: true,
       volume: "$2m Vol.",
+      category: "Economics"
     },
     {
       id: "2",
@@ -55,6 +57,7 @@ export default function ExpandingCardGrid() {
       percentage: 52,
       winner: "Florida",
       volume: "$314k Vol.",
+      category: "Sports"
     },
     {
       id: "3",
@@ -69,6 +72,7 @@ export default function ExpandingCardGrid() {
         12,
       ),
       volume: "$36m Vol.",
+      category: "Politics"
     },
     {
       id: "4",
@@ -84,6 +88,7 @@ export default function ExpandingCardGrid() {
       ),
       volume: "$17m Vol.",
       monthly: true,
+      category: "Economics"
     },
     {
       id: "5",
@@ -98,6 +103,7 @@ export default function ExpandingCardGrid() {
         15,
       ),
       volume: "$4m Vol.",
+      category: "Politics"
     },
     {
       id: "6",
@@ -112,6 +118,7 @@ export default function ExpandingCardGrid() {
         9,
       ),
       volume: "$59k Vol.",
+      category: "Politics"
     },
     {
       id: "7",
@@ -126,6 +133,7 @@ export default function ExpandingCardGrid() {
         10,
       ),
       volume: "$140k Vol.",
+      category: "Trade"
     },
     {
       id: "8",
@@ -140,6 +148,7 @@ export default function ExpandingCardGrid() {
         11,
       ),
       volume: "$549k Vol.",
+      category: "Trade"
     },
     {
       id: "9",
@@ -148,6 +157,7 @@ export default function ExpandingCardGrid() {
       percentage: 34,
       chance: true,
       volume: "$501k Vol.",
+      category: "Politics"
     },
     {
       id: "10",
@@ -156,6 +166,7 @@ export default function ExpandingCardGrid() {
       percentage: 56,
       chance: true,
       volume: "$26k Vol.",
+      category: "Trade"
     },
     {
       id: "11",
@@ -170,6 +181,7 @@ export default function ExpandingCardGrid() {
         14,
       ),
       volume: "$5m Vol.",
+      category: "Economics"
     },
     {
       id: "12",
@@ -178,6 +190,7 @@ export default function ExpandingCardGrid() {
       percentage: 25,
       chance: true,
       volume: "$6m Vol.",
+      category: "Geopolitics"
     },
   ]
 
@@ -210,9 +223,15 @@ export default function ExpandingCardGrid() {
                   <img 
                     src={card.imageUrl} 
                     alt="" 
-                    className="w-8 h-8 rounded-md flex-shrink-0 object-cover"
+                    className="w-10 h-10 rounded-md flex-shrink-0 object-cover"
                   />
-                  <h3 className="font-medium text-sm truncate">{card.title}</h3>
+                  <div className="flex flex-col gap-0.5">
+                    {/* Category Badge */}
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-700/70 text-gray-300 w-fit">
+                      {card.category}
+                    </span>
+                    <h3 className="font-medium text-sm truncate">{card.title}</h3>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
