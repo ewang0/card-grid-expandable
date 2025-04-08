@@ -7,13 +7,14 @@ import { ArrowUpRight, ArrowDownRight, Bookmark, RefreshCw, Maximize2, Minimize2
 type CardData = {
   id: string
   title: string
-  icon: string
+  imageUrl: string
   percentage?: number
   options?: { name: string; percentage: number }[]
   chance?: boolean
   winner?: string
   volume: string
   monthly?: boolean
+  category: string
 }
 
 export default function ExpandingCardGrid() {
@@ -43,23 +44,25 @@ export default function ExpandingCardGrid() {
     {
       id: "1",
       title: "US recession in 2025?",
-      icon: "🇺🇸",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=US",
       percentage: 62,
       chance: true,
       volume: "$2m Vol.",
+      category: "Economics"
     },
     {
       id: "2",
       title: "Florida vs. Houston",
-      icon: "🏀",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=🏀",
       percentage: 52,
       winner: "Florida",
       volume: "$314k Vol.",
+      category: "Sports"
     },
     {
       id: "3",
       title: "Next Prime Minister of Canada after the election?",
-      icon: "🇨🇦",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=CA",
       options: generateMoreOptions(
         [
           { name: "Mark Carney", percentage: 73 },
@@ -69,11 +72,12 @@ export default function ExpandingCardGrid() {
         12,
       ),
       volume: "$36m Vol.",
+      category: "Politics"
     },
     {
       id: "4",
       title: "Fed decision in May?",
-      icon: "💵",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=$",
       options: generateMoreOptions(
         [
           { name: "50+ bps decrease", percentage: 4 },
@@ -84,11 +88,12 @@ export default function ExpandingCardGrid() {
       ),
       volume: "$17m Vol.",
       monthly: true,
+      category: "Economics"
     },
     {
       id: "5",
       title: "Next president of South Korea?",
-      icon: "🇰🇷",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=KR",
       options: generateMoreOptions(
         [
           { name: "Lee Jae-myung", percentage: 79 },
@@ -98,11 +103,12 @@ export default function ExpandingCardGrid() {
         15,
       ),
       volume: "$4m Vol.",
+      category: "Politics"
     },
     {
       id: "6",
       title: "What will Trump say during Netanyahu events today?",
-      icon: "🗣️",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=Talk",
       options: generateMoreOptions(
         [
           { name: "Israel 7+ times", percentage: 100 },
@@ -112,11 +118,12 @@ export default function ExpandingCardGrid() {
         9,
       ),
       volume: "$59k Vol.",
+      category: "Politics"
     },
     {
       id: "7",
       title: "Which country will Trump lower tariffs on first?",
-      icon: "🌎",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=Globe",
       options: generateMoreOptions(
         [
           { name: "Israel", percentage: 56 },
@@ -126,11 +133,12 @@ export default function ExpandingCardGrid() {
         10,
       ),
       volume: "$140k Vol.",
+      category: "Trade"
     },
     {
       id: "8",
       title: "Which countries will Trump reduce tariffs on before June?",
-      icon: "🌐",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=World",
       options: generateMoreOptions(
         [
           { name: "Japan", percentage: 90 },
@@ -140,27 +148,30 @@ export default function ExpandingCardGrid() {
         11,
       ),
       volume: "$549k Vol.",
+      category: "Trade"
     },
     {
       id: "9",
       title: "Elon out of Trump administration before 2026?",
-      icon: "🚀",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=🚀",
       percentage: 34,
       chance: true,
       volume: "$501k Vol.",
+      category: "Politics"
     },
     {
       id: "10",
       title: "Will Trump reduce majority of tariffs before 2026?",
-      icon: "📊",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=Chart",
       percentage: 56,
       chance: true,
       volume: "$26k Vol.",
+      category: "Trade"
     },
     {
       id: "11",
       title: "How many Fed rate cuts in 2025?",
-      icon: "📈",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=Fed",
       options: generateMoreOptions(
         [
           { name: "0", percentage: 7 },
@@ -170,14 +181,16 @@ export default function ExpandingCardGrid() {
         14,
       ),
       volume: "$5m Vol.",
+      category: "Economics"
     },
     {
       id: "12",
       title: "Russia x Ukraine ceasefire before July?",
-      icon: "🇷🇺",
+      imageUrl: "https://placehold.co/40x40/333/FFF?text=RU",
       percentage: 25,
       chance: true,
       volume: "$6m Vol.",
+      category: "Geopolitics"
     },
   ]
 
@@ -207,8 +220,18 @@ export default function ExpandingCardGrid() {
               {/* Header */}
               <motion.div layout="position" className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2 max-w-[70%]">
-                  <span className="text-xl flex-shrink-0">{card.icon}</span>
-                  <h3 className="font-medium text-sm truncate">{card.title}</h3>
+                  <img 
+                    src={card.imageUrl} 
+                    alt="" 
+                    className="w-10 h-10 rounded-md flex-shrink-0 object-cover"
+                  />
+                  <div className="flex flex-col gap-0.5">
+                    {/* Category Badge */}
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-700/70 text-gray-300 w-fit">
+                      {card.category}
+                    </span>
+                    <h3 className="font-medium text-sm truncate">{card.title}</h3>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -292,10 +315,7 @@ export default function ExpandingCardGrid() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.2,
-                      delay: 0.3, // Delay to match the card expansion duration (300ms)
-                    }}
+                    layout="position"
                     className="mt-4"
                   >
                     <div className="text-sm text-gray-300">
