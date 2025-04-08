@@ -292,10 +292,7 @@ export default function ExpandingCardGrid() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.2,
-                      delay: 0.3, // Delay to match the card expansion duration (300ms)
-                    }}
+                    layout="position"
                     className="mt-4"
                   >
                     <div className="text-sm text-gray-300">
