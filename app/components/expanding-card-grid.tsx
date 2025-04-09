@@ -24,6 +24,7 @@ type CardData = {
 
 export default function ExpandingCardGrid() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  // Remove this line: const [hoveredOption, setHoveredOption] = useState<{ id: string; isYes: boolean } | null>(null)
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
@@ -49,7 +50,7 @@ export default function ExpandingCardGrid() {
     {
       id: "1",
       title: "US recession in 2025?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=US",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=62%",
       percentage: 62,
       chance: true,
       volume: "$2m Vol.",
@@ -59,7 +60,7 @@ export default function ExpandingCardGrid() {
     {
       id: "2",
       title: "Florida vs. Houston",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=🏀",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=52%",
       percentage: 52,
       winner: "Florida",
       volume: "$314k Vol.",
@@ -69,7 +70,7 @@ export default function ExpandingCardGrid() {
     {
       id: "3",
       title: "Next Prime Minister of Canada after the election?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=CA",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=CA",
       options: generateMoreOptions(
         [
           { name: "Mark Carney", percentage: 73 },
@@ -84,7 +85,7 @@ export default function ExpandingCardGrid() {
     {
       id: "4",
       title: "Fed decision in May?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=$",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=$",
       options: generateMoreOptions(
         [
           { name: "50+ bps decrease", percentage: 4 },
@@ -100,7 +101,7 @@ export default function ExpandingCardGrid() {
     {
       id: "5",
       title: "Next president of South Korea?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=KR",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=KR",
       options: generateMoreOptions(
         [
           { name: "Lee Jae-myung", percentage: 79 },
@@ -115,7 +116,7 @@ export default function ExpandingCardGrid() {
     {
       id: "6",
       title: "What will Trump say during Netanyahu events today?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=Talk",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=KR",
       options: generateMoreOptions(
         [
           { name: "Israel 7+ times", percentage: 100 },
@@ -130,7 +131,7 @@ export default function ExpandingCardGrid() {
     {
       id: "7",
       title: "Which country will Trump lower tariffs on first?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=Globe",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=Globe",
       options: generateMoreOptions(
         [
           { name: "Israel", percentage: 56 },
@@ -145,7 +146,7 @@ export default function ExpandingCardGrid() {
     {
       id: "8",
       title: "Which countries will Trump reduce tariffs on before June?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=World",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=World",
       options: generateMoreOptions(
         [
           { name: "Japan", percentage: 90 },
@@ -160,7 +161,7 @@ export default function ExpandingCardGrid() {
     {
       id: "9",
       title: "Elon out of Trump administration before 2026?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=🚀",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=34%",
       percentage: 34,
       chance: true,
       volume: "$501k Vol.",
@@ -170,7 +171,7 @@ export default function ExpandingCardGrid() {
     {
       id: "10",
       title: "Will Trump reduce majority of tariffs before 2026?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=Chart",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=56%",
       percentage: 56,
       chance: true,
       volume: "$26k Vol.",
@@ -180,7 +181,7 @@ export default function ExpandingCardGrid() {
     {
       id: "11",
       title: "How many Fed rate cuts in 2025?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=Fed",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=Fed",
       options: generateMoreOptions(
         [
           { name: "0", percentage: 7 },
@@ -195,7 +196,7 @@ export default function ExpandingCardGrid() {
     {
       id: "12",
       title: "Russia x Ukraine ceasefire before July?",
-      imageUrl: "https://placehold.co/40x40/333/FFF?text=RU",
+      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=25%",
       percentage: 25,
       chance: true,
       volume: "$6m Vol.",
@@ -227,7 +228,7 @@ export default function ExpandingCardGrid() {
                   <img
                     src={card.imageUrl || "/placeholder.svg"}
                     alt=""
-                    className="w-10 h-10 rounded-md flex-shrink-0 object-cover self-start mt-0.5"
+                    className="w-10 h-10 rounded-sm flex-shrink-0 object-cover self-start mt-0.5"
                   />
                   <div className="flex flex-col">
                     <h3 className="font-bold text-sm line-clamp-2 group-hover:line-clamp-none transition-all">
@@ -248,21 +249,39 @@ export default function ExpandingCardGrid() {
                       }`}
                     >
                       {card.options?.map((option, index) => (
-                        <motion.div
-                          key={index}
-                          layout="position"
-                          className="flex justify-between items-center mb-1.5 group"
-                        >
-                          <span className="text-sm truncate max-w-[60%]">{option.name}</span>
-                          <div className="flex items-center gap-1.5 flex-shrink-0">
-                            <span className="font-semibold text-xs">{option.percentage}%</span>
-                            <div className="flex gap-0.5">
-                              <span className="text-xs px-1 rounded bg-teal-800/30 text-teal-400 group-hover:bg-teal-700/40 group-hover:text-teal-300 transition-colors duration-200">
-                                Y
-                              </span>
-                              <span className="text-xs px-1 rounded bg-rose-800/30 text-rose-400 group-hover:bg-rose-700/40 group-hover:text-rose-300 transition-colors duration-200">
-                                N
-                              </span>
+                        <motion.div key={index} layout="position" className="flex items-center justify-between mb-2 group">
+                          {/* Option name */}
+                          <span className="text-sm truncate mr-2 flex-shrink-0" style={{ width: "40%" }}>
+                            {option.name}
+                          </span>
+
+                          <div className="flex items-center">
+                            {/* Percentage (Yes) */}
+                            <span className="text-xs font-semibold mr-2 w-8 text-right">{option.percentage}%</span>
+                            {/* Percentage bar container */}
+                            <div className=" relative" style={{ width: "64px" }}>
+                              {/* Bar */}
+                              <div className="h-2.5 w-full bg-slate-800 rounded-xs overflow-hidden relative">
+                                {/* Yes portion */}
+                                <div
+                                  className="h-full bg-teal-700/40 rounded-l-sm"
+                                  style={{
+                                    width: `${option.percentage}%`,
+                                    borderRadius: option.percentage === 100 ? "2px" : undefined,
+                                  }}
+                                />
+                                {/* No portion */}
+                                {option.percentage < 100 && (
+                                  <div
+                                    className="h-full bg-rose-700/40 rounded-r-sm absolute top-0"
+                                    style={{
+                                      width: `${100 - option.percentage}%`,
+                                      right: 0,
+                                      borderRadius: option.percentage === 0 ? "2px" : undefined,
+                                    }}
+                                  />
+                                )}
+                              </div>
                             </div>
                           </div>
                         </motion.div>
