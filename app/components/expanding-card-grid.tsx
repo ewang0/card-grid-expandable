@@ -214,7 +214,7 @@ export default function ExpandingCardGrid() {
           <motion.div
             key={card.id}
             layout
-            className="bg-gray-800 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
+            className="bg-slate-900 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
             style={{
               gridRow: isExpanded ? "span 2" : "span 1",
               height: isExpanded ? "456px" : "220px", // Increased height to fully span 2 rows
@@ -238,10 +238,7 @@ export default function ExpandingCardGrid() {
               </motion.div>
 
               {/* Content */}
-              <motion.div
-                layout="position"
-                className={`flex-grow relative ${isExpanded ? "overflow-y-auto" : ""}`}
-              >
+              <motion.div layout="position" className={`flex-grow relative ${isExpanded ? "overflow-y-auto" : ""}`}>
                 {hasOptions ? (
                   <div className="relative">
                     {/* Scrollable options container with different max-height based on expanded state */}
@@ -251,13 +248,21 @@ export default function ExpandingCardGrid() {
                       }`}
                     >
                       {card.options?.map((option, index) => (
-                        <motion.div key={index} layout="position" className="flex justify-between items-center mb-1.5">
+                        <motion.div
+                          key={index}
+                          layout="position"
+                          className="flex justify-between items-center mb-1.5 group"
+                        >
                           <span className="text-sm truncate max-w-[60%]">{option.name}</span>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             <span className="font-semibold text-xs">{option.percentage}%</span>
                             <div className="flex gap-0.5">
-                              <span className="text-xs px-1 rounded bg-green-900/30 text-green-400">Y</span>
-                              <span className="text-xs px-1 rounded bg-red-900/30 text-red-400">N</span>
+                              <span className="text-xs px-1 rounded bg-teal-800/30 text-teal-400 group-hover:bg-teal-700/40 group-hover:text-teal-300 transition-colors duration-200">
+                                Y
+                              </span>
+                              <span className="text-xs px-1 rounded bg-rose-800/30 text-rose-400 group-hover:bg-rose-700/40 group-hover:text-rose-300 transition-colors duration-200">
+                                N
+                              </span>
                             </div>
                           </div>
                         </motion.div>
@@ -266,17 +271,17 @@ export default function ExpandingCardGrid() {
 
                     {/* Fade effect at the bottom when not expanded */}
                     {!isExpanded && (
-                      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-gray-800 to-transparent pointer-events-none"></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
                     )}
                   </div>
                 ) : (
                   <motion.div layout="position">
                     {/* Buy buttons */}
                     <motion.div layout="position" className="mt-2 grid grid-cols-2 gap-2">
-                      <button className="flex justify-center items-center gap-1 py-2 bg-green-800/30 text-green-400 rounded-md text-sm">
+                      <button className="flex justify-center items-center gap-1 py-2 bg-teal-700/30 hover:bg-teal-600/40 text-teal-400 hover:text-teal-300 rounded-md text-sm transition-colors duration-200">
                         Buy Yes <ArrowUpRight size={14} />
                       </button>
-                      <button className="flex justify-center items-center gap-1 py-2 bg-red-800/30 text-red-400 rounded-md text-sm">
+                      <button className="flex justify-center items-center gap-1 py-2 bg-rose-700/30 hover:bg-rose-600/40 text-rose-400 hover:text-rose-300 rounded-md text-sm transition-colors duration-200">
                         Buy No <ArrowDownRight size={14} />
                       </button>
                     </motion.div>
@@ -315,7 +320,7 @@ export default function ExpandingCardGrid() {
                           ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl.
                         </p>
                       </div>
-                      
+
                       {/* Add padding at the bottom to ensure content doesn't get cut off by the shadow */}
                       <div className="h-8"></div>
                     </motion.div>
@@ -324,7 +329,7 @@ export default function ExpandingCardGrid() {
 
                 {/* Shadow at the bottom of scrollable content - keep this outside the AnimatePresence */}
                 {isExpanded && (
-                  <div className="absolute bottom-[10px] left-0 right-0 h-8 bg-gradient-to-t from-gray-800 to-transparent pointer-events-none"></div>
+                  <div className="absolute bottom-[10px] left-0 right-0 h-8 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
                 )}
               </motion.div>
 
@@ -334,15 +339,15 @@ export default function ExpandingCardGrid() {
                   {card.volume} {card.monthly && "Monthly"}
                 </span>
                 <div className="flex gap-1">
-                  <div className="hover:bg-gray-700 p-0.5 rounded cursor-pointer">
+                  <div className="hover:bg-slate-800 p-0.5 rounded cursor-pointer">
                     <Gift size={15} />
                   </div>
-                  <div className="hover:bg-gray-700 p-0.5 rounded cursor-pointer">
+                  <div className="hover:bg-slate-800 p-0.5 rounded cursor-pointer">
                     <Bookmark size={15} />
                   </div>
                   <button
                     onClick={() => toggleExpand(card.id)}
-                    className="text-gray-400 hover:text-white hover:bg-gray-700 p-0.5 rounded transition-colors flex-shrink-0 cursor-pointer"
+                    className="text-gray-400 hover:text-white hover:bg-slate-800 p-0.5 rounded transition-colors flex-shrink-0 cursor-pointer"
                     aria-label={isExpanded ? "Collapse card" : "Expand card"}
                   >
                     {isExpanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />}

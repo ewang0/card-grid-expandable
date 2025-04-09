@@ -1,7 +1,15 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { createChart, ColorType, LineStyle, CrosshairMode, ChartOptions, DeepPartial, Time } from "lightweight-charts"
+import {
+  createChart,
+  ColorType,
+  LineStyle,
+  CrosshairMode,
+  type ChartOptions,
+  type DeepPartial,
+  type Time,
+} from "lightweight-charts"
 import { ArrowUp, ArrowDown } from "lucide-react"
 
 // Time period options
@@ -73,8 +81,8 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
       const value = i === 0 ? percentage : Math.max(5, Math.min(95, startValue + randomWalk))
 
       points.push({
-        time: pointDate.getTime() / 1000 as Time,
-        value: Number(value.toFixed(1)) ,
+        time: (pointDate.getTime() / 1000) as Time,
+        value: Number(value.toFixed(1)),
       })
 
       // Update the start value to create a continuous line
@@ -97,7 +105,7 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
 
     const chartOptions: DeepPartial<ChartOptions> = {
       layout: {
-        background: { type: ColorType.Solid, color: "rgba(19, 23, 34, 0)" },
+        background: { type: ColorType.Solid, color: "rgba(15, 23, 42, 0)" },
         textColor: "#9ca3af",
         fontSize: 12,
       },
@@ -137,7 +145,7 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
           width: 1,
           color: "rgba(224, 227, 235, 0.1)",
           style: LineStyle.Solid,
-          labelBackgroundColor: "#13171e",
+          labelBackgroundColor: "#0f172a",
         },
       },
       handleScroll: false, // Disable chart scrolling
@@ -148,7 +156,7 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
     const data = generateMockData()
 
     const lineSeries = chart.addLineSeries({
-      color: "#3b82f6",
+      color: "#2dd4bf",
       lineWidth: 2,
       crosshairMarkerVisible: true,
       crosshairMarkerRadius: 4,
@@ -169,7 +177,7 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
       {
         time: data[data.length - 1].time,
         position: "inBar",
-        color: "#3b82f6",
+        color: "#2dd4bf",
         shape: "circle",
         size: 1,
       },
@@ -204,9 +212,11 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
         <div>
           <div className="text-xs text-gray-400">YES</div>
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">{percentage}% chance</span>
+            <span className="text-xl font-bold text-teal-400">{percentage}% chance</span>
             {change !== 0 && (
-              <span className={`text-sm flex items-center px-2 py-0.5 rounded-full ${isPositive ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}>
+              <span
+                className={`text-sm flex items-center px-2 py-0.5 rounded-full ${isPositive ? "bg-teal-800/30 text-teal-400" : "bg-rose-800/30 text-rose-400"}`}
+              >
                 {isPositive ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
                 {Math.abs(change)}%
               </span>
