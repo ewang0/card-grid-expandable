@@ -12,7 +12,8 @@ const OrderBook = dynamic(() => import("./order-book"), { ssr: false })
 type CardData = {
   id: string
   title: string
-  imageUrl: string
+  iconColor?: string
+  iconText?: string
   percentage?: number
   options?: { name: string; percentage: number }[]
   chance?: boolean
@@ -51,7 +52,8 @@ export default function ExpandingCardGrid() {
     {
       id: "1",
       title: "US recession in 2025?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=62%",
+      iconColor: "#1e293b",
+      iconText: "62%",
       percentage: 62,
       chance: true,
       volume: "$2m Vol.",
@@ -61,7 +63,8 @@ export default function ExpandingCardGrid() {
     {
       id: "2",
       title: "Florida vs. Houston",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=52%",
+      iconColor: "#1e293b",
+      iconText: "52%",
       percentage: 52,
       winner: "Florida",
       volume: "$314k Vol.",
@@ -71,7 +74,8 @@ export default function ExpandingCardGrid() {
     {
       id: "3",
       title: "Next Prime Minister of Canada after the election?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=CA",
+      iconColor: "#1e293b",
+      iconText: "CA",
       options: generateMoreOptions(
         [
           { name: "Mark Carney", percentage: 73 },
@@ -86,7 +90,8 @@ export default function ExpandingCardGrid() {
     {
       id: "4",
       title: "Fed decision in May?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=$",
+      iconColor: "#1e293b",
+      iconText: "FE",
       options: generateMoreOptions(
         [
           { name: "50+ bps decrease", percentage: 4 },
@@ -102,7 +107,8 @@ export default function ExpandingCardGrid() {
     {
       id: "5",
       title: "Next president of South Korea?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=KR",
+      iconColor: "#1e293b",
+      iconText: "KR",
       options: generateMoreOptions(
         [
           { name: "Lee Jae-myung", percentage: 79 },
@@ -117,7 +123,8 @@ export default function ExpandingCardGrid() {
     {
       id: "6",
       title: "What will Trump say during Netanyahu events today?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=KR",
+      iconColor: "#1e293b",
+      iconText: "TR",
       options: generateMoreOptions(
         [
           { name: "Israel 7+ times", percentage: 100 },
@@ -132,7 +139,8 @@ export default function ExpandingCardGrid() {
     {
       id: "7",
       title: "Which country will Trump lower tariffs on first?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=Globe",
+      iconColor: "#1e293b",
+      iconText: "TR",
       options: generateMoreOptions(
         [
           { name: "Israel", percentage: 56 },
@@ -147,7 +155,8 @@ export default function ExpandingCardGrid() {
     {
       id: "8",
       title: "Which countries will Trump reduce tariffs on before June?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=World",
+      iconColor: "#1e293b",
+      iconText: "TR",
       options: generateMoreOptions(
         [
           { name: "Japan", percentage: 90 },
@@ -162,7 +171,8 @@ export default function ExpandingCardGrid() {
     {
       id: "9",
       title: "Elon out of Trump administration before 2026?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=34%",
+      iconColor: "#1e293b",
+      iconText: "34%",
       percentage: 34,
       chance: true,
       volume: "$501k Vol.",
@@ -172,7 +182,8 @@ export default function ExpandingCardGrid() {
     {
       id: "10",
       title: "Will Trump reduce majority of tariffs before 2026?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=56%",
+      iconColor: "#1e293b",
+      iconText: "56%",
       percentage: 56,
       chance: true,
       volume: "$26k Vol.",
@@ -182,7 +193,8 @@ export default function ExpandingCardGrid() {
     {
       id: "11",
       title: "How many Fed rate cuts in 2025?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=Fed",
+      iconColor: "#1e293b",
+      iconText: "FE",
       options: generateMoreOptions(
         [
           { name: "0", percentage: 7 },
@@ -197,7 +209,8 @@ export default function ExpandingCardGrid() {
     {
       id: "12",
       title: "Russia x Ukraine ceasefire before July?",
-      imageUrl: "https://placehold.co/40x40/1e293b/FFF?text=25%",
+      iconColor: "#1e293b",
+      iconText: "25%",
       percentage: 25,
       chance: true,
       volume: "$6m Vol.",
@@ -225,12 +238,12 @@ export default function ExpandingCardGrid() {
             <motion.div className="p-4 h-full flex flex-col" layout>
               {/* Header */}
               <motion.div layout="position" className="flex items-start justify-between mb-3 min-h-[4rem]">
-                <div className="flex items-center gap-2 max-w-[80%] group">
-                  <img
-                    src={card.imageUrl || "/placeholder.svg"}
-                    alt=""
-                    className="w-10 h-10 rounded-sm flex-shrink-0 object-cover self-start mt-0.5"
-                  />
+                <div className="flex items-center gap-2 group">
+                  <div
+                    className="w-10 h-10 rounded-sm flex-shrink-0 self-start mt-0.5 flex items-center justify-center bg-slate-800 text-sm font-bold"
+                  >
+                    {card.iconText || card.category.substring(0, 2)}
+                  </div>
                   <div className="flex flex-col">
                     <h3 className="font-bold text-sm line-clamp-2 group-hover:line-clamp-none transition-all">
                       {card.title}
@@ -325,7 +338,9 @@ export default function ExpandingCardGrid() {
                     >
                       {/* Price chart for cards with percentage */}
                       {card.percentage && (
-                        <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
+                        <div className="h-[232px]">
+                          <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
+                        </div>
                       )}
 
                       {/* Order Book - added below the price chart */}
