@@ -7,6 +7,7 @@ import dynamic from "next/dynamic"
 
 // Dynamically import the chart component with no SSR to avoid hydration issues
 const PriceChart = dynamic(() => import("./price-chart"), { ssr: false })
+const OrderBook = dynamic(() => import("./order-book"), { ssr: false })
 
 type CardData = {
   id: string
@@ -249,7 +250,11 @@ export default function ExpandingCardGrid() {
                       }`}
                     >
                       {card.options?.map((option, index) => (
-                        <motion.div key={index} layout="position" className="flex items-center justify-between mb-2 group">
+                        <motion.div
+                          key={index}
+                          layout="position"
+                          className="flex items-center justify-between mb-2 group"
+                        >
                           {/* Option name */}
                           <span className="text-sm truncate mr-2 flex-shrink-0" style={{ width: "40%" }}>
                             {option.name}
@@ -325,18 +330,42 @@ export default function ExpandingCardGrid() {
                         </div>
                       )}
 
+                      {/* Order Book - added below the price chart */}
+                      {card.percentage && (
+                        <div className="mt-4 mb-4">
+                          <OrderBook />
+                        </div>
+                      )}
+
                       <div className="mt-4 text-sm text-gray-300">
-                        <p>Additional details about this prediction market would appear here when expanded.</p>
-                        <p className="mt-2">
-                          Historical data, related markets, and other insights could be displayed in this expanded view.
+                        <h3 className="font-semibold text-gray-200 mb-2">Rules</h3>
+                        <p>
+                          On February 17, the White House stated that Musk is a Senior Advisor to the President and an
+                          employee in the White House Office.
                         </p>
                         <p className="mt-2">
-                          The card has a fixed height of 2 rows in the grid, and content will scroll if it exceeds this
-                          height.
+                          This market will resolve to &ldquo;Yes&rdquo; if it is announced that Elon Musk will leave the Trump
+                          Administration, or otherwise ceases to be a member of administration by June 30, 2025, 11:59
+                          PM ET.
                         </p>
                         <p className="mt-2">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget aliquam
-                          ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl.
+                          An announcement of Musk&apos;s resignation/removal before this market&apos;s end date will immediately
+                          resolve this market to &ldquo;Yes&rdquo;, regardless of when the announced resignation/removal goes into
+                          effect.
+                        </p>
+                        <p className="mt-2">
+                          The Trump administration includes individuals formally appointed by Donald Trump to roles
+                          within the U.S. federal government, such as Cabinet members, Executive Office staff, senior
+                          policy advisors, ambassadors, or White House staff whose appointments are publicly announced
+                          by official government channels.
+                        </p>
+                        <p className="mt-2">
+                          Changes to Musk&apos;s position within the Trump administration (e.g. if he is named administrator
+                          of DOGE), will not qualify for a &ldquo;Yes&rdquo; resolution.
+                        </p>
+                        <p className="mt-2">
+                          The primary resolution source will be official information from the Trump administration,
+                          however a consensus of credible reporting may also be used.
                         </p>
                       </div>
 
