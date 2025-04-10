@@ -264,7 +264,7 @@ export default function ExpandingCardGrid() {
                             {/* Percentage (Yes) */}
                             <span className="text-xs font-semibold mr-2 w-8 text-right">{option.percentage}%</span>
                             {/* Percentage bar container */}
-                            <div className=" relative" style={{ width: "64px" }}>
+                            <div className=" relative" style={{ width: "60px" }}>
                               {/* Bar */}
                               <div className="h-2.5 w-full bg-slate-800 rounded-xs overflow-hidden relative">
                                 {/* Yes portion */}
@@ -321,18 +321,16 @@ export default function ExpandingCardGrid() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute inset-x-0 top-[80px] bottom-[10px] overflow-y-auto px-2"
+                      className="absolute inset-x-0 top-[72px] bottom-[10px] overflow-y-auto"
                     >
                       {/* Price chart for cards with percentage */}
                       {card.percentage && (
-                        <div className="h-[280px]">
-                          <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
-                        </div>
+                        <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
                       )}
 
                       {/* Order Book - added below the price chart */}
                       {card.percentage && (
-                        <div className="mt-4 mb-4">
+                        <div className="my-8">
                           <OrderBook />
                         </div>
                       )}

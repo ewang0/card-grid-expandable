@@ -190,7 +190,7 @@ export default function OrderBook() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-lg border border-gray-800 bg-gray-900 text-gray-300">
+    <div className="w-full max-w-md rounded-lg border border-slate-800 bg-slate-800 text-slate-300">
       <div className="flex items-center justify-between p-3 cursor-pointer" onClick={toggleCollapse}>
         <h2 className="text-base font-semibold">Order Book</h2>
         {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
@@ -199,49 +199,49 @@ export default function OrderBook() {
       <div
         className={cn(
           "transition-all duration-300 ease-in-out overflow-hidden",
-          isCollapsed ? "max-h-0 opacity-0" : "max-h-[1000px] opacity-100",
+          isCollapsed ? "max-h-0 opacity-0" : "opacity-100",
         )}
       >
-        <div className="border-b border-gray-800">
+        <div className="border-b border-slate-900">
           <div className="flex">
             <button
               onClick={() => setActiveTab("yes")}
               className={cn(
                 "px-4 py-1.5 text-xs font-medium relative",
-                activeTab === "yes" ? "text-gray-200" : "text-gray-500",
+                activeTab === "yes" ? "text-slate-200" : "text-slate-500",
               )}
             >
               Trade Yes
-              {activeTab === "yes" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-200"></div>}
+              {activeTab === "yes" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-200"></div>}
             </button>
             <button
               onClick={() => setActiveTab("no")}
               className={cn(
                 "px-4 py-1.5 text-xs font-medium relative",
-                activeTab === "no" ? "text-gray-200" : "text-gray-500",
+                activeTab === "no" ? "text-slate-200" : "text-slate-500",
               )}
             >
               Trade No
-              {activeTab === "no" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-200"></div>}
+              {activeTab === "no" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-200"></div>}
             </button>
           </div>
         </div>
 
-        <div className="sticky top-0 z-10 grid grid-cols-3 px-4 py-1.5 text-[10px] text-gray-400 bg-gray-900">
+        <div className="sticky top-0 z-10 grid grid-cols-3 px-4 py-1.5 text-[10px] text-slate-400 bg-slate-900">
           <div>PRICE</div>
           <div className="text-right">SHARES</div>
           <div className="text-right">TOTAL</div>
         </div>
 
-        <div className="max-h-[300px] overflow-y-auto">
-          <div className="space-y-px">
+        <div>
+          <div className="space-y-px bg-slate-900">
             {/* Asks (Sell orders) */}
             <div className="relative">
               <AnimatePresence initial={false}>
                 {asks.map((ask) => (
                   <div key={ask.id} className="relative grid grid-cols-3 items-center px-4 py-1 text-xs">
                     <motion.div
-                      className="absolute inset-0 bg-red-900/30 z-0"
+                      className="absolute inset-0 bg-rose-900/30 z-0"
                       initial={{ width: 0 }}
                       animate={{
                         width: `${ask.percentage}%`,
@@ -254,7 +254,7 @@ export default function OrderBook() {
                         mass: 1,
                       }}
                     ></motion.div>
-                    <div className="relative z-10 text-red-400">{ask.price}</div>
+                    <div className="relative z-10 text-rose-400">{ask.price}</div>
                     <div className="relative z-10 text-right">{ask.shares}</div>
                     <div className="relative z-10 text-right">{ask.total}</div>
                   </div>
@@ -263,7 +263,7 @@ export default function OrderBook() {
             </div>
 
             {/* Last price and spread */}
-            <div className="sticky z-10 grid grid-cols-3 bg-gray-800/80 px-4 py-1.5 text-xs">
+            <div className="sticky z-10 grid grid-cols-3 bg-slate-800/80 px-4 py-1.5 text-xs">
               <div>Last: {lastPrice}</div>
               <div className="col-span-2 text-right">Spread: {spread}</div>
             </div>
@@ -274,7 +274,7 @@ export default function OrderBook() {
                 {bids.map((bid) => (
                   <div key={bid.id} className="relative grid grid-cols-3 items-center px-4 py-1 text-xs">
                     <motion.div
-                      className="absolute inset-0 bg-green-900/30 z-0"
+                      className="absolute inset-0 bg-teal-900/30 z-0"
                       initial={{ width: 0 }}
                       animate={{
                         width: `${bid.percentage}%`,
@@ -287,7 +287,7 @@ export default function OrderBook() {
                         mass: 1,
                       }}
                     ></motion.div>
-                    <div className="relative z-10 text-green-400">{bid.price}</div>
+                    <div className="relative z-10 text-teal-400">{bid.price}</div>
                     <div className="relative z-10 text-right">{bid.shares}</div>
                     <div className="relative z-10 text-right">{bid.total}</div>
                   </div>
