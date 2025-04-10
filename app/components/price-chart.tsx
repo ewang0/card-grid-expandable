@@ -36,7 +36,7 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
     // Determine number of data points and time interval based on period
     let numPoints = 0
     let timeInterval = 0
-    let startValue = 20 + (seed % 20) // Start between 20-40%
+    const startValue = 20 + (seed % 30) // Start between 20-50%
 
     switch (selectedPeriod) {
       case "1H":
@@ -60,35 +60,102 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
         timeInterval = 8 * 60 * 60 * 1000 // 8 hours
         break
       case "ALL":
-        numPoints = 100
+        numPoints = 120
         timeInterval = 24 * 60 * 60 * 1000 // 1 day
         break
     }
 
-    // Generate data points
-    for (let i = numPoints - 1; i >= 0; i--) {
-      const pointDate = new Date(now.getTime() - i * timeInterval)
+    // Trading patterns - create more realistic market movements
+    const createTradingPattern = () => {
+      // Create a more realistic trading pattern with various market behaviors
+      const patterns = []
 
-      // Create a pseudo-random walk that ends at the current percentage
-      let randomWalk = 0
-      if (i > 0) {
-        // More volatility in the middle, trending toward final value
-        const volatility = 2 + (seed % 3) // Different volatility per card
-        const trend = (percentage - startValue) / numPoints
-        randomWalk = Math.sin(i * seed) * volatility + trend * (numPoints - i)
+      // Baseline volatility - different for each card
+      const baseVolatility = 1.5 + (seed % 4)
+
+      // Create some trend periods
+      const trendPeriods = []
+      let remainingPoints = numPoints
+
+      while (remainingPoints > 0) {
+        // Random period length between 5 and 20 points
+        const periodLength = Math.min(remainingPoints, 5 + Math.floor(Math.random() * 15))
+
+        // Trend direction and strength
+        const trendStrength = (Math.random() * 2 - 1) * baseVolatility * 0.8
+
+        // Volatility for this period
+        const periodVolatility = baseVolatility * (0.5 + Math.random())
+
+        trendPeriods.push({
+          length: periodLength,
+          trend: trendStrength,
+          volatility: periodVolatility,
+        })
+
+        remainingPoints -= periodLength
       }
 
-      const value = i === 0 ? percentage : Math.max(5, Math.min(95, startValue + randomWalk))
+      // Generate the actual patterns
+      for (const period of trendPeriods) {
+        for (let i = 0; i < period.length; i++) {
+          // Base movement is the trend
+          let movement = period.trend
+
+          // Add volatility
+          movement += (Math.random() * 2 - 1) * period.volatility
+
+          // Occasionally add a price spike or drop (1 in 15 chance)
+          if (Math.random() < 0.067) {
+            movement += (Math.random() * 2 - 1) * period.volatility * 3
+          }
+
+          // Occasionally add a flat period (1 in 10 chance)
+          if (Math.random() < 0.1) {
+            movement = 0
+          }
+
+          patterns.push(movement)
+        }
+      }
+
+      return patterns
+    }
+
+    // Generate the trading pattern for this chart
+    const tradingPattern = createTradingPattern()
+
+    // Target value (current percentage)
+    const targetValue = percentage
+
+    // Calculate how much we need to adjust each point to reach the target
+    const totalDrift = targetValue - startValue
+    const driftPerPoint = totalDrift / numPoints
+
+    // Generate data points with the trading pattern
+    let currentValue = startValue
+
+    for (let i = 0; i < numPoints; i++) {
+      const pointDate = new Date(now.getTime() - (numPoints - i) * timeInterval)
+
+      // Apply the trading pattern movement
+      currentValue += tradingPattern[i]
+
+      // Apply a small drift toward the target value
+      currentValue += driftPerPoint * (1 + (Math.random() * 0.4 - 0.2))
+
+      // Ensure the value stays within reasonable bounds (5-95%)
+      currentValue = Math.max(5, Math.min(95, currentValue))
+
+      // Force the last point to be exactly the target percentage
+      if (i === numPoints - 1) {
+        currentValue = targetValue
+      }
 
       points.push({
         time: (pointDate.getTime() / 1000) as Time,
-        value: Number(value.toFixed(1)),
+        value: Number(currentValue.toFixed(1)),
       })
-
-      // Update the start value to create a continuous line
-      if (i < numPoints - 1) {
-        startValue = points[points.length - 1].value
-      }
     }
 
     return points
