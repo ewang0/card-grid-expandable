@@ -296,7 +296,7 @@ export default function ExpandingCardGrid() {
                 ) : (
                   <motion.div layout="position">
                     {/* Buy buttons */}
-                    <motion.div layout="position" className="mt-2 grid grid-cols-2 gap-2">
+                    <motion.div layout="position" className="grid grid-cols-2 gap-2">
                       <button className="flex justify-center items-center gap-1 py-2 bg-teal-700/30 hover:bg-teal-600/40 text-teal-400 hover:text-teal-300 rounded-md text-sm transition-colors duration-200">
                         Buy Yes <ArrowUpRight size={14} />
                       </button>
