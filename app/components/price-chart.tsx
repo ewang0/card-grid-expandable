@@ -177,10 +177,10 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
         fontSize: 12,
       },
       width: chartContainerRef.current.clientWidth,
-      height: 200,
+      height: 150,
       grid: {
         vertLines: {
-          color: "rgba(42, 46, 57, 0.5)",
+          color: "rgba(42, 46, 57, 0)",
           style: LineStyle.Dotted,
         },
         horzLines: {
@@ -197,6 +197,7 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
         },
       },
       timeScale: {
+        visible: false,
         borderVisible: false,
         timeVisible: true,
         secondsVisible: false,
@@ -301,13 +302,13 @@ export default function PriceChart({ cardId, percentage, change = 0 }: PriceChar
       />
 
       {/* Time period selector - Made to span full width */}
-      <div className="grid grid-cols-6 gap-1 mt-2 mb-4 w-full text-xs">
+      <div className="grid grid-cols-6 gap-1 mt-2 my-4 rounded-md w-full text-xs">
         {(["1H", "6H", "1D", "1W", "1M", "ALL"] as TimePeriod[]).map((period) => (
           <button
             key={period}
             onClick={() => setSelectedPeriod(period)}
-            className={`px-1 py-1 rounded text-center ${
-              selectedPeriod === period ? "bg-gray-700 text-white" : "text-gray-400 hover:text-white"
+            className={`px-1 py-1 rounded text-center cursor-pointer ${
+              selectedPeriod === period ? "bg-slate-800 text-white" : "text-gray-400 hover:text-white"
             }`}
           >
             {period}
