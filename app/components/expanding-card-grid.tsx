@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ArrowUpRight, ArrowDownRight, Bookmark, Gift, Maximize2, Minimize2 } from "lucide-react"
 import dynamic from "next/dynamic"
 
-// Dynamically import the chart component with no SSR to avoid hydration issues
 const PriceChart = dynamic(() => import("./price-chart"), { ssr: false })
 const OrderBook = dynamic(() => import("./order-book"), { ssr: false })
 
@@ -26,28 +25,12 @@ type CardData = {
 
 export default function ExpandingCardGrid() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  // Remove this line: const [hoveredOption, setHoveredOption] = useState<{ id: string; isYes: boolean } | null>(null)
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
   }
 
-  // Generate more options for demonstration
-  const generateMoreOptions = (baseOptions: { name: string; percentage: number }[], total = 10) => {
-    const result = [...baseOptions]
-
-    // Add more options with fixed percentages instead of random ones
-    while (result.length < total) {
-      const lastIndex = result.length
-      result.push({
-        name: `Additional Option ${lastIndex + 1}`,
-        percentage: 10 + (lastIndex % 20), // Deterministic value instead of random
-      })
-    }
-
-    return result
-  }
-
+  // Card data array
   const cards: CardData[] = [
     {
       id: "1",
@@ -161,8 +144,7 @@ export default function ExpandingCardGrid() {
       title: "What price will Ethereum hit in April?",
       iconColor: "#1e293b",
       iconText: "IN",
-      options: generateMoreOptions(
-        [
+      options: [
           { name: "$8000", percentage: 1 },
           { name: "$6000", percentage: 1 },
           { name: "$5000", percentage: 1 },
@@ -175,9 +157,7 @@ export default function ExpandingCardGrid() {
           { name: "$2000", percentage: 14 },
           { name: "$1200", percentage: 26 },
           { name: "$1000", percentage: 7 },
-        ],
-        10,
-      ),
+      ],
       volume: "$140k Vol.",
       category: "Trade",
     },
@@ -265,11 +245,11 @@ export default function ExpandingCardGrid() {
             className="bg-slate-900 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
             style={{
               gridRow: isExpanded ? "span 2" : "span 1",
-              height: isExpanded ? "456px" : "220px", // Increased height to fully span 2 rows
+              height: isExpanded ? "456px" : "220px",
             }}
           >
             <motion.div className="p-4 h-full flex flex-col" layout>
-              {/* Header */}
+              {/* Card Header - Title and Icon */}
               <motion.div layout="position" className="flex items-start justify-between mb-3 min-h-[4rem]">
                 <div className="flex items-center gap-2 group">
                   <div
@@ -291,11 +271,11 @@ export default function ExpandingCardGrid() {
                 </div>
               </motion.div>
 
-              {/* Content */}
+              {/* Card Content - Options or Buy Buttons */}
               <motion.div layout="position" className={`flex-grow relative ${isExpanded ? "overflow-y-auto" : ""}`}>
                 {hasOptions ? (
                   <div className="relative">
-                    {/* Scrollable options container with different max-height based on expanded state */}
+                    {/* Scrollable options with percentage bars */}
                     <div
                       className={`overflow-y-auto pr-1 transition-all duration-300 ${
                         isExpanded ? "max-h-[300px]" : "max-h-[80px]"
@@ -307,19 +287,14 @@ export default function ExpandingCardGrid() {
                           layout="position"
                           className="flex items-center justify-between mb-2 group"
                         >
-                          {/* Option name */}
                           <span className="text-sm truncate mr-2 flex-shrink-0" style={{ width: "40%" }}>
                             {option.name}
                           </span>
 
                           <div className="flex items-center">
-                            {/* Percentage (Yes) */}
                             <span className="text-xs font-semibold mr-2 w-8 text-right">{option.percentage}%</span>
-                            {/* Percentage bar container */}
-                            <div className=" relative" style={{ width: "60px" }}>
-                              {/* Bar */}
+                            <div className="relative" style={{ width: "60px" }}>
                               <div className="h-2.5 w-full bg-slate-800 rounded-xs overflow-hidden relative">
-                                {/* Yes portion */}
                                 <div
                                   className="h-full bg-teal-700/40 rounded-l-sm"
                                   style={{
@@ -327,7 +302,6 @@ export default function ExpandingCardGrid() {
                                     borderRadius: option.percentage === 100 ? "2px" : undefined,
                                   }}
                                 />
-                                {/* No portion */}
                                 {option.percentage < 100 && (
                                   <div
                                     className="h-full bg-rose-700/40 rounded-r-sm absolute top-0"
@@ -344,15 +318,12 @@ export default function ExpandingCardGrid() {
                         </motion.div>
                       ))}
                     </div>
-
-                    {/* Fade effect at the bottom when not expanded */}
                     {!isExpanded && (
                       <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
                     )}
                   </div>
                 ) : (
                   <motion.div layout="position">
-                    {/* Buy buttons */}
                     <motion.div layout="position" className="grid grid-cols-2 gap-2">
                       <button className="flex justify-center items-center gap-1 py-2 bg-teal-700/30 hover:bg-teal-600/40 text-teal-400 hover:text-teal-300 rounded-md text-sm transition-colors duration-200 transform hover:scale-102 cursor-pointer">
                         Buy Yes <ArrowUpRight size={14} />
@@ -364,7 +335,7 @@ export default function ExpandingCardGrid() {
                   </motion.div>
                 )}
 
-                {/* Expanded content */}
+                {/* Expanded content - Charts and Rules */}
                 <AnimatePresence mode="wait">
                   {isExpanded && !hasOptions && (
                     <motion.div
@@ -375,20 +346,21 @@ export default function ExpandingCardGrid() {
                       transition={{ duration: 0.3 }}
                       className="absolute inset-x-0 top-[72px] bottom-[10px] overflow-y-auto"
                     >
-                      {/* Price chart for cards with percentage */}
+                      {/* Price chart */}
                       {card.percentage && (
                         <div className="h-[232px]">
                           <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
                         </div>
                       )}
 
-                      {/* Order Book - added below the price chart */}
+                      {/* Order Book */}
                       {card.percentage && (
                         <div className="my-8">
                           <OrderBook />
                         </div>
                       )}
 
+                      {/* Rules */}
                       <div className="mt-4 text-sm text-gray-300">
                         <h3 className="font-semibold text-gray-200 mb-2">Rules</h3>
                         <p>
@@ -416,19 +388,19 @@ export default function ExpandingCardGrid() {
                         </p>
                       </div>
 
-                      {/* Add padding at the bottom to ensure content doesn't get cut off by the shadow */}
+                      {/* Bottom padding for scrollable content */}
                       <div className="h-8"></div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* Shadow at the bottom of scrollable content - keep this outside the AnimatePresence */}
+                {/* Bottom shadow for scrollable content */}
                 {isExpanded && (
                   <div className="absolute bottom-[10px] left-0 right-0 h-8 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
                 )}
               </motion.div>
 
-              {/* Footer - now after expanded content */}
+              {/* Card Footer */}
               <motion.div layout="position" className="flex justify-between items-center mt-4 text-gray-400 text-xs">
                 <span>
                   {card.volume} {card.monthly && "Monthly"}

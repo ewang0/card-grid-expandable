@@ -1,17 +1,55 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo, memo } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "../lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 
-// Define types for our order data
 interface OrderData {
   price: string
   shares: string
   total: string
   percentage: number
-  id: string // Unique ID for animation keying
+  id: string
+}
+
+const OrderRow = memo(({ 
+  order, 
+  isAsk 
+}: { 
+  order: OrderData, 
+  isAsk: boolean 
+}) => {
+  return (
+    <div className="relative grid grid-cols-3 items-center px-4 py-1 text-xs">
+      <motion.div
+        className={`absolute inset-0 ${isAsk ? 'bg-rose-900/30' : 'bg-teal-900/30'} z-0`}
+        initial={{ width: 0 }}
+        animate={{
+          width: `${order.percentage}%`,
+          [isAsk ? 'right' : 'left']: 0,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 120,
+          damping: 20,
+          mass: 1,
+        }}
+      ></motion.div>
+      <div className={`relative z-10 ${isAsk ? 'text-rose-400' : 'text-teal-400'}`}>{order.price}</div>
+      <div className="relative z-10 text-right">{order.shares}</div>
+      <div className="relative z-10 text-right">{order.total}</div>
+    </div>
+  )
+})
+OrderRow.displayName = 'OrderRow'
+
+// Helper function to format numbers with commas
+const formatNumber = (num: string | number) => {
+  return Number(num).toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
 }
 
 export default function OrderBook() {
@@ -19,7 +57,7 @@ export default function OrderBook() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Initialize with expanded mock data - whole cent values only
+  // mock data
   const [asks, setAsks] = useState<OrderData[]>([
     { price: "99¢", shares: "20230", total: "$20028", percentage: 100, id: "ask-1" },
     { price: "98¢", shares: "3575", total: "$3504", percentage: 80, id: "ask-2" },
@@ -59,68 +97,73 @@ export default function OrderBook() {
   const [lastPrice, setLastPrice] = useState("85¢")
   const [spread, setSpread] = useState("1¢")
 
-  // Function to simulate market data changes
-  const updateMarketData = useCallback(() => {
-    // Update asks
-    setAsks((prevAsks) => {
-      const newAsks = [...prevAsks].map((ask) => {
-        // Random change to shares (±10%)
-        const currentShares = Number.parseFloat(ask.shares.replace(/,/g, ""))
-        const sharesChange = currentShares * (0.9 + Math.random() * 0.2) // 90% to 110% of current value
-        const newShares = Math.round(sharesChange).toString()
+  // Extract price parsing to a utility function
+  const parsePriceInCents = useCallback((priceString: string): number => {
+    return Number.parseInt(priceString.replace("¢", ""))
+  }, [])
 
-        // Calculate new total
-        const price = Number.parseInt(ask.price.replace("¢", "")) / 100
-        const newTotal = Math.round(sharesChange * price).toString()
+  // Optimize market data update logic
+  const updateMarketData = useCallback(() => {
+    // Update asks with more efficient data handling
+    setAsks(prevAsks => {
+      const newAsks = prevAsks.map(ask => {
+        const currentShares = Number(ask.shares.replace(/,/g, ""))
+        const sharesChange = currentShares * (0.9 + Math.random() * 0.2)
+        const newShares = Math.round(sharesChange)
+        const price = parsePriceInCents(ask.price) / 100
+        const newTotal = Math.round(newShares * price)
 
         return {
           ...ask,
           shares: formatNumber(newShares),
           total: `$${formatNumber(newTotal)}`,
-          percentage: Math.min(100, Math.max(10, ask.percentage + (Math.random() * 30 - 15))), // Random change to percentage
+          percentage: Math.min(100, Math.max(10, ask.percentage + (Math.random() * 30 - 15))),
         }
       })
 
-      // Normalize percentages relative to the highest value
-      const maxTotal = Math.max(...newAsks.map((ask) => Number.parseFloat(ask.total.replace(/[$,]/g, ""))))
-      return newAsks.map((ask) => ({
+      // Calculate max total once and reuse
+      const maxTotal = Math.max(...newAsks.map(ask => 
+        Number(ask.total.replace(/[$,]/g, ""))
+      ))
+      
+      return newAsks.map(ask => ({
         ...ask,
-        percentage: (Number.parseFloat(ask.total.replace(/[$,]/g, "")) / maxTotal) * 100,
+        percentage: (Number(ask.total.replace(/[$,]/g, "")) / maxTotal) * 100,
       }))
     })
 
-    // Update bids
-    setBids((prevBids) => {
-      const newBids = [...prevBids].map((bid) => {
-        // Random change to shares (±10%)
-        const currentShares = Number.parseFloat(bid.shares.replace(/,/g, ""))
-        const sharesChange = currentShares * (0.9 + Math.random() * 0.2) // 90% to 110% of current value
-        const newShares = Math.round(sharesChange).toString()
-
-        // Calculate new total
-        const price = Number.parseInt(bid.price.replace("¢", "")) / 100
-        const newTotal = Math.round(sharesChange * price).toString()
+    // Update bids with similar optimizations
+    setBids(prevBids => {
+      const newBids = prevBids.map(bid => {
+        const currentShares = Number(bid.shares.replace(/,/g, ""))
+        const sharesChange = currentShares * (0.9 + Math.random() * 0.2)
+        const newShares = Math.round(sharesChange)
+        const price = parsePriceInCents(bid.price) / 100
+        const newTotal = Math.round(newShares * price)
 
         return {
           ...bid,
           shares: formatNumber(newShares),
           total: `$${formatNumber(newTotal)}`,
-          percentage: Math.min(100, Math.max(10, bid.percentage + (Math.random() * 30 - 15))), // Random change to percentage
+          percentage: Math.min(100, Math.max(10, bid.percentage + (Math.random() * 30 - 15))),
         }
       })
 
-      // Normalize percentages relative to the highest value
-      const maxTotal = Math.max(...newBids.map((bid) => Number.parseFloat(bid.total.replace(/[$,]/g, ""))))
-      return newBids.map((bid) => ({
+      const maxTotal = Math.max(...newBids.map(bid => 
+        Number(bid.total.replace(/[$,]/g, ""))
+      ))
+      
+      return newBids.map(bid => ({
         ...bid,
-        percentage: (Number.parseFloat(bid.total.replace(/[$,]/g, "")) / maxTotal) * 100,
+        percentage: (Number(bid.total.replace(/[$,]/g, "")) / maxTotal) * 100,
       }))
     })
 
     // Occasionally update last price
     if (Math.random() > 0.7) {
-      const askPrices = asks.map((ask) => Number.parseInt(ask.price.replace("¢", "")))
-      const bidPrices = bids.map((bid) => Number.parseInt(bid.price.replace("¢", "")))
+      // Cache parsed prices to avoid repeated parsing
+      const askPrices = asks.map(ask => parsePriceInCents(ask.price))
+      const bidPrices = bids.map(bid => parsePriceInCents(bid.price))
       const allPrices = [...askPrices, ...bidPrices]
       const randomIndex = Math.floor(Math.random() * allPrices.length)
       setLastPrice(`${allPrices[randomIndex]}¢`)
@@ -131,19 +174,11 @@ export default function OrderBook() {
       setSpread(`${minAsk - maxBid}¢`)
     }
 
-    // Schedule next update at a random interval
+    // Schedule next update
     scheduleNextUpdate()
-  }, [asks, bids])
+  }, [asks, bids, parsePriceInCents])
 
-  // Helper function to format numbers with commas
-  const formatNumber = (num: string) => {
-    return Number.parseFloat(num).toLocaleString("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    })
-  }
-
-  // Function to schedule the next update at a random interval
+  // Schedule the next update at a random interval
   const scheduleNextUpdate = useCallback(() => {
     if (isCollapsed) return
 
@@ -152,12 +187,10 @@ export default function OrderBook() {
       clearTimeout(timeoutRef.current)
     }
 
-    // Random interval between 3000ms and 8000ms (3-8 seconds)
+    // Random interval between 3000ms and 8000ms 
     const randomInterval = 3000 + Math.random() * 5000
 
-    timeoutRef.current = setTimeout(() => {
-      updateMarketData()
-    }, randomInterval)
+    timeoutRef.current = setTimeout(updateMarketData, randomInterval)
   }, [updateMarketData, isCollapsed])
 
   // Set up initial update and clean up on unmount
@@ -185,13 +218,52 @@ export default function OrderBook() {
     }
   }, [isCollapsed, scheduleNextUpdate])
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed)
-  }
+  // Memoize tab buttons to prevent unnecessary re-renders
+  const TabButtons = useMemo(() => (
+    <div className="flex">
+      <button
+        onClick={() => setActiveTab("yes")}
+        className={cn(
+          "px-4 py-1.5 text-xs font-medium relative cursor-pointer hover:text-slate-200",
+          activeTab === "yes" ? "text-slate-200" : "text-slate-500",
+        )}
+      >
+        Trade Yes
+        {activeTab === "yes" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-200"></div>}
+      </button>
+      <button
+        onClick={() => setActiveTab("no")}
+        className={cn(
+          "px-4 py-1.5 text-xs font-medium relative cursor-pointer hover:text-slate-200",
+          activeTab === "no" ? "text-slate-200" : "text-slate-500",
+        )}
+      >
+        Trade No
+        {activeTab === "no" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-200"></div>}
+      </button>
+    </div>
+  ), [activeTab])
+
+  // Memoize header to prevent unnecessary re-renders
+  const OrderBookHeader = useMemo(() => (
+    <div className="sticky top-0 z-10 grid grid-cols-3 px-4 py-1.5 text-[10px] text-slate-400 bg-slate-900">
+      <div>PRICE</div>
+      <div className="text-right">SHARES</div>
+      <div className="text-right">TOTAL</div>
+    </div>
+  ), [])
+
+  // Memoize price info to prevent unnecessary re-renders
+  const PriceInfo = useMemo(() => (
+    <div className="sticky z-10 grid grid-cols-3 bg-slate-800/80 px-4 py-1.5 text-xs">
+      <div>Last: {lastPrice}</div>
+      <div className="col-span-2 text-right">Spread: {spread}</div>
+    </div>
+  ), [lastPrice, spread])
 
   return (
     <div className="w-full max-w-md rounded-lg border border-slate-800 bg-slate-800 text-slate-300">
-      <div className="flex items-center justify-between p-3 cursor-pointer" onClick={toggleCollapse}>
+      <div className="flex items-center justify-between p-3 cursor-pointer" onClick={() => setIsCollapsed(!isCollapsed)}>
         <h2 className="text-base font-semibold">Order Book</h2>
         {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
       </div>
@@ -203,94 +275,30 @@ export default function OrderBook() {
         )}
       >
         <div className="border-b border-slate-900">
-          <div className="flex">
-            <button
-              onClick={() => setActiveTab("yes")}
-              className={cn(
-                "px-4 py-1.5 text-xs font-medium relative cursor-pointer hover:text-slate-200",
-                activeTab === "yes" ? "text-slate-200" : "text-slate-500",
-              )}
-            >
-              Trade Yes
-              {activeTab === "yes" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-200"></div>}
-            </button>
-            <button
-              onClick={() => setActiveTab("no")}
-              className={cn(
-                "px-4 py-1.5 text-xs font-medium relative cursor-pointer hover:text-slate-200",
-                activeTab === "no" ? "text-slate-200" : "text-slate-500",
-              )}
-            >
-              Trade No
-              {activeTab === "no" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-200"></div>}
-            </button>
-          </div>
+          {TabButtons}
         </div>
 
-        <div className="sticky top-0 z-10 grid grid-cols-3 px-4 py-1.5 text-[10px] text-slate-400 bg-slate-900">
-          <div>PRICE</div>
-          <div className="text-right">SHARES</div>
-          <div className="text-right">TOTAL</div>
-        </div>
+        {OrderBookHeader}
 
         <div>
           <div className="space-y-px bg-slate-900">
             {/* Asks (Sell orders) */}
             <div className="relative">
-              <AnimatePresence initial={false}>
+              <AnimatePresence initial={false} mode="popLayout">
                 {asks.map((ask) => (
-                  <div key={ask.id} className="relative grid grid-cols-3 items-center px-4 py-1 text-xs">
-                    <motion.div
-                      className="absolute inset-0 bg-rose-900/30 z-0"
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: `${ask.percentage}%`,
-                        right: 0,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 120,
-                        damping: 20,
-                        mass: 1,
-                      }}
-                    ></motion.div>
-                    <div className="relative z-10 text-rose-400">{ask.price}</div>
-                    <div className="relative z-10 text-right">{ask.shares}</div>
-                    <div className="relative z-10 text-right">{ask.total}</div>
-                  </div>
+                  <OrderRow key={ask.id} order={ask} isAsk={true} />
                 ))}
               </AnimatePresence>
             </div>
 
             {/* Last price and spread */}
-            <div className="sticky z-10 grid grid-cols-3 bg-slate-800/80 px-4 py-1.5 text-xs">
-              <div>Last: {lastPrice}</div>
-              <div className="col-span-2 text-right">Spread: {spread}</div>
-            </div>
+            {PriceInfo}
 
             {/* Bids (Buy orders) */}
             <div className="relative">
-              <AnimatePresence initial={false}>
+              <AnimatePresence initial={false} mode="popLayout">
                 {bids.map((bid) => (
-                  <div key={bid.id} className="relative grid grid-cols-3 items-center px-4 py-1 text-xs">
-                    <motion.div
-                      className="absolute inset-0 bg-teal-900/30 z-0"
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: `${bid.percentage}%`,
-                        left: 0,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 120,
-                        damping: 20,
-                        mass: 1,
-                      }}
-                    ></motion.div>
-                    <div className="relative z-10 text-teal-400">{bid.price}</div>
-                    <div className="relative z-10 text-right">{bid.shares}</div>
-                    <div className="relative z-10 text-right">{bid.total}</div>
-                  </div>
+                  <OrderRow key={bid.id} order={bid} isAsk={false} />
                 ))}
               </AnimatePresence>
             </div>
