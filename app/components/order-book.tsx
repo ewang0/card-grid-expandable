@@ -207,7 +207,7 @@ export default function OrderBook() {
             <button
               onClick={() => setActiveTab("yes")}
               className={cn(
-                "px-4 py-1.5 text-xs font-medium relative",
+                "px-4 py-1.5 text-xs font-medium relative cursor-pointer hover:text-slate-200",
                 activeTab === "yes" ? "text-slate-200" : "text-slate-500",
               )}
             >
@@ -217,7 +217,7 @@ export default function OrderBook() {
             <button
               onClick={() => setActiveTab("no")}
               className={cn(
-                "px-4 py-1.5 text-xs font-medium relative",
+                "px-4 py-1.5 text-xs font-medium relative cursor-pointer hover:text-slate-200",
                 activeTab === "no" ? "text-slate-200" : "text-slate-500",
               )}
             >
