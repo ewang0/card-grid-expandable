@@ -1,34 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ArrowUpRight, ArrowDownRight, Bookmark, Gift, Maximize2, Minimize2 } from "lucide-react"
-import dynamic from "next/dynamic"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowUpRight,
+  ArrowDownRight,
+  Bookmark,
+  Gift,
+  Maximize2,
+  Minimize2,
+  Flower,
+} from "lucide-react";
+import dynamic from "next/dynamic";
 
-const PriceChart = dynamic(() => import("./price-chart"), { ssr: false })
-const OrderBook = dynamic(() => import("./order-book"), { ssr: false })
+const PriceChart = dynamic(() => import("./price-chart"), { ssr: false });
+const OrderBook = dynamic(() => import("./order-book"), { ssr: false });
 
 type CardData = {
-  id: string
-  title: string
-  iconColor?: string
-  iconText?: string
-  percentage?: number
-  options?: { name: string; percentage: number }[]
-  chance?: boolean
-  winner?: string
-  volume: string
-  monthly?: boolean
-  category: string
-  change?: number
-}
+  id: string;
+  title: string;
+  iconColor?: string;
+  iconText?: string;
+  percentage?: number;
+  options?: { name: string; percentage: number }[];
+  chance?: boolean;
+  winner?: string;
+  volume: string;
+  monthly?: boolean;
+  category: string;
+  change?: number;
+};
 
 export default function ExpandingCardGrid() {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id)
-  }
+    setExpandedId(expandedId === id ? null : id);
+  };
 
   // Card data array
   const cards: CardData[] = [
@@ -52,7 +60,7 @@ export default function ExpandingCardGrid() {
       winner: "No",
       volume: "$1m Vol.",
       category: "Technology",
-      change: 12,
+      change: -12,
     },
     {
       id: "3",
@@ -60,11 +68,11 @@ export default function ExpandingCardGrid() {
       iconColor: "#1e293b",
       iconText: "CA",
       options: [
-          { name: "Mark Carney", percentage: 73 },
-          { name: "Pierre Poilievre", percentage: 28 },
-          { name: "Chrystia Freeland", percentage: 1 },
-          { name: "Jagmeet Singh", percentage: 1 },
-          { name: "Justin Trudeau", percentage: 1 },
+        { name: "Mark Carney", percentage: 73 },
+        { name: "Pierre Poilievre", percentage: 28 },
+        { name: "Chrystia Freeland", percentage: 1 },
+        { name: "Jagmeet Singh", percentage: 1 },
+        { name: "Justin Trudeau", percentage: 1 },
       ],
       volume: "$36m Vol.",
       category: "Politics",
@@ -75,10 +83,10 @@ export default function ExpandingCardGrid() {
       iconColor: "#1e293b",
       iconText: "US",
       options: [
-          { name: "50+ bps decrease", percentage: 4 },
-          { name: "25 bps decrease", percentage: 23 },
-          { name: "No change", percentage: 73 },
-          { name: "25+ bps increase", percentage: 1 },
+        { name: "50+ bps decrease", percentage: 4 },
+        { name: "25 bps decrease", percentage: 23 },
+        { name: "No change", percentage: 73 },
+        { name: "25+ bps increase", percentage: 1 },
       ],
       volume: "$17m Vol.",
       monthly: true,
@@ -90,21 +98,21 @@ export default function ExpandingCardGrid() {
       iconColor: "#1e293b",
       iconText: "KR",
       options: [
-          { name: "Lee Jae-myung", percentage: 78 },
-          { name: "Kim Moon-soo", percentage: 6 },
-          { name: "Lee Jun-seok", percentage: 5 },
-          { name: "Han Dong-hoon", percentage: 5 },
-          { name: "Hong Joon-pyo", percentage: 3 },
-          { name: "Oh Se-hoon", percentage: 2 },
-          { name: "Yoon Suk Yeol", percentage: 1 },
-          { name: "Ahn Cheol-soo", percentage: 1 },
-          { name: "Na Kyung-won", percentage: 1 },
-          { name: "Yoo Seong-min", percentage: 0.9 },
-          { name: "Lee Nak-yon", percentage: 0.9 },
-          { name: "Kim Dong-yeon", percentage: 0.9 },
-          { name: "Cho Kuk", percentage: 0.9 },
-          { name: "Kim Boo-kyum", percentage: 0.9 },
-          { name: "Won Hee-ryong", percentage: 0.9 },
+        { name: "Lee Jae-myung", percentage: 78 },
+        { name: "Kim Moon-soo", percentage: 6 },
+        { name: "Lee Jun-seok", percentage: 5 },
+        { name: "Han Dong-hoon", percentage: 5 },
+        { name: "Hong Joon-pyo", percentage: 3 },
+        { name: "Oh Se-hoon", percentage: 2 },
+        { name: "Yoon Suk Yeol", percentage: 1 },
+        { name: "Ahn Cheol-soo", percentage: 1 },
+        { name: "Na Kyung-won", percentage: 1 },
+        { name: "Yoo Seong-min", percentage: 0.9 },
+        { name: "Lee Nak-yon", percentage: 0.9 },
+        { name: "Kim Dong-yeon", percentage: 0.9 },
+        { name: "Cho Kuk", percentage: 0.9 },
+        { name: "Kim Boo-kyum", percentage: 0.9 },
+        { name: "Won Hee-ryong", percentage: 0.9 },
       ],
       volume: "$4m Vol.",
       category: "Politics",
@@ -115,15 +123,15 @@ export default function ExpandingCardGrid() {
       iconColor: "#1e293b",
       iconText: "US",
       options: [
-          { name: "Boston Celtics", percentage: 29 },
-          { name: "Oklahoma City Thunder", percentage: 33 },
-          { name: "Cleveland Cavaliers", percentage: 12 },
-          { name: "Los Angeles Lakers", percentage: 8 },
-          { name: "Golden State Warriors", percentage: 5 },
-          { name: "Denver Nuggets", percentage: 4 },
-          { name: "LA Clippers", percentage: 3 },
-          { name: "New York Knicks", percentage: 2 },
-          { name: "Houston Rockets", percentage: 2 },
+        { name: "Boston Celtics", percentage: 29 },
+        { name: "Oklahoma City Thunder", percentage: 33 },
+        { name: "Cleveland Cavaliers", percentage: 12 },
+        { name: "Los Angeles Lakers", percentage: 8 },
+        { name: "Golden State Warriors", percentage: 5 },
+        { name: "Denver Nuggets", percentage: 4 },
+        { name: "LA Clippers", percentage: 3 },
+        { name: "New York Knicks", percentage: 2 },
+        { name: "Houston Rockets", percentage: 2 },
       ],
       volume: "$59k Vol.",
       category: "Politics",
@@ -145,18 +153,18 @@ export default function ExpandingCardGrid() {
       iconColor: "#1e293b",
       iconText: "IN",
       options: [
-          { name: "$8000", percentage: 1 },
-          { name: "$6000", percentage: 1 },
-          { name: "$5000", percentage: 1 },
-          { name: "$4000", percentage: 1 },
-          { name: "$3500", percentage: 1 },
-          { name: "$3000", percentage: 1 },
-          { name: "$2600", percentage: 1 },
-          { name: "$2400", percentage: 2 },
-          { name: "$2200", percentage: 5 },
-          { name: "$2000", percentage: 14 },
-          { name: "$1200", percentage: 26 },
-          { name: "$1000", percentage: 7 },
+        { name: "$8000", percentage: 1 },
+        { name: "$6000", percentage: 1 },
+        { name: "$5000", percentage: 1 },
+        { name: "$4000", percentage: 1 },
+        { name: "$3500", percentage: 1 },
+        { name: "$3000", percentage: 1 },
+        { name: "$2600", percentage: 1 },
+        { name: "$2400", percentage: 2 },
+        { name: "$2200", percentage: 5 },
+        { name: "$2000", percentage: 14 },
+        { name: "$1200", percentage: 26 },
+        { name: "$1000", percentage: 7 },
       ],
       volume: "$140k Vol.",
       category: "Trade",
@@ -230,19 +238,19 @@ export default function ExpandingCardGrid() {
       category: "Crypto",
       change: 52,
     },
-  ]
+  ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card) => {
-        const isExpanded = expandedId === card.id
-        const hasOptions = !!card.options
+        const isExpanded = expandedId === card.id;
+        const hasOptions = !!card.options;
 
         return (
           <motion.div
             key={card.id}
             layout
-            className="bg-slate-900 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
+            className="bg-neutral-900 rounded-lg overflow-hidden transition-shadow hover:shadow-lg group"
             style={{
               gridRow: isExpanded ? "span 2" : "span 1",
               height: isExpanded ? "456px" : "220px",
@@ -250,18 +258,25 @@ export default function ExpandingCardGrid() {
           >
             <motion.div className="p-4 h-full flex flex-col" layout>
               {/* Card Header - Title and Icon */}
-              <motion.div layout="position" className="flex items-start justify-between mb-3 min-h-[4rem]">
+              <motion.div
+                layout="position"
+                className="flex items-start justify-between mb-3 min-h-[4rem]"
+              >
                 <div className="flex items-center gap-2 group">
                   <div
-                    className={`w-10 h-10 rounded-sm flex-shrink-0 self-start mt-0.5 flex items-center justify-center bg-slate-800 text-sm font-bold ${
-                      card.percentage 
-                        ? card.percentage >= 50 
-                          ? "text-teal-400" 
+                    className={`w-10 h-10 rounded-sm flex-shrink-0 self-start mt-0.5 flex items-center justify-center bg-neutral-800 text-sm font-bold ${
+                      card.percentage
+                        ? card.percentage >= 50
+                          ? "text-teal-400"
                           : "text-rose-400"
                         : "text-neutral-50"
                     }`}
                   >
-                    {card.iconText || card.category.substring(0, 2)}
+                    {card.percentage ? (
+                      card.iconText || card.category.substring(0, 2)
+                    ) : (
+                      <Flower size={20} />
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <h3 className="font-bold text-sm text-pretty line-clamp-2 group-hover:line-clamp-none transition-all">
@@ -272,7 +287,12 @@ export default function ExpandingCardGrid() {
               </motion.div>
 
               {/* Card Content - Options or Buy Buttons */}
-              <motion.div layout="position" className={`flex-grow relative ${isExpanded ? "overflow-y-auto" : ""}`}>
+              <motion.div
+                layout="position"
+                className={`flex-grow relative ${
+                  isExpanded ? "overflow-y-auto" : ""
+                }`}
+              >
                 {hasOptions ? (
                   <div className="relative">
                     {/* Scrollable options with percentage bars */}
@@ -287,19 +307,27 @@ export default function ExpandingCardGrid() {
                           layout="position"
                           className="flex items-center justify-between mb-2 group"
                         >
-                          <span className="text-sm truncate mr-2 flex-shrink-0" style={{ width: "40%" }}>
+                          <span
+                            className="text-sm truncate mr-2 flex-shrink-0"
+                            style={{ width: "40%" }}
+                          >
                             {option.name}
                           </span>
 
                           <div className="flex items-center">
-                            <span className="text-xs font-semibold mr-2 w-8 text-right">{option.percentage}%</span>
+                            <span className="text-xs font-semibold mr-2 w-8 text-right">
+                              {option.percentage}%
+                            </span>
                             <div className="relative" style={{ width: "60px" }}>
-                              <div className="h-2.5 w-full bg-slate-800 rounded-xs overflow-hidden relative">
+                              <div className="h-2.5 w-full bg-neutral-800 rounded-xs overflow-hidden relative">
                                 <div
                                   className="h-full bg-teal-700/40 rounded-l-sm"
                                   style={{
                                     width: `${option.percentage}%`,
-                                    borderRadius: option.percentage === 100 ? "2px" : undefined,
+                                    borderRadius:
+                                      option.percentage === 100
+                                        ? "2px"
+                                        : undefined,
                                   }}
                                 />
                                 {option.percentage < 100 && (
@@ -308,7 +336,10 @@ export default function ExpandingCardGrid() {
                                     style={{
                                       width: `${100 - option.percentage}%`,
                                       right: 0,
-                                      borderRadius: option.percentage === 0 ? "2px" : undefined,
+                                      borderRadius:
+                                        option.percentage === 0
+                                          ? "2px"
+                                          : undefined,
                                     }}
                                   />
                                 )}
@@ -319,12 +350,15 @@ export default function ExpandingCardGrid() {
                       ))}
                     </div>
                     {!isExpanded && (
-                      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-neutral-900 to-transparent pointer-events-none"></div>
                     )}
                   </div>
                 ) : (
                   <motion.div layout="position">
-                    <motion.div layout="position" className="grid grid-cols-2 gap-2">
+                    <motion.div
+                      layout="position"
+                      className="grid grid-cols-2 gap-2"
+                    >
                       <button className="flex justify-center items-center gap-1 py-2 bg-teal-700/30 hover:bg-teal-600/40 text-teal-400 hover:text-teal-300 rounded-md text-sm transition-colors duration-200 transform hover:scale-102 cursor-pointer">
                         Buy Yes <ArrowUpRight size={14} />
                       </button>
@@ -349,7 +383,11 @@ export default function ExpandingCardGrid() {
                       {/* Price chart */}
                       {card.percentage && (
                         <div className="h-[232px]">
-                          <PriceChart cardId={card.id} percentage={card.percentage} change={card.change} />
+                          <PriceChart
+                            cardId={card.id}
+                            percentage={card.percentage}
+                            change={card.change}
+                          />
                         </div>
                       )}
 
@@ -362,29 +400,42 @@ export default function ExpandingCardGrid() {
 
                       {/* Rules */}
                       <div className="mt-4 text-sm text-gray-300">
-                        <h3 className="font-semibold text-gray-200 mb-2">Rules</h3>
+                        <h3 className="font-semibold text-gray-200 mb-2">
+                          Rules
+                        </h3>
                         <p>
-                          This market is based on the outcome of the specified event as described in the title.
+                          This market is based on the outcome of the specified
+                          event as described in the title.
                         </p>
                         <p className="mt-2">
-                          This market will resolve to &ldquo;Yes&rdquo; if the conditions specified in the market description are met
-                          before the expiration date. Otherwise, it will resolve to &ldquo;No&rdquo;.
+                          This market will resolve to &ldquo;Yes&rdquo; if the
+                          conditions specified in the market description are met
+                          before the expiration date. Otherwise, it will resolve
+                          to &ldquo;No&rdquo;.
                         </p>
                         <p className="mt-2">
-                          The resolution criteria are based on publicly verifiable information and will be determined by
-                          the market creator according to the specific rules outlined for this market.
+                          The resolution criteria are based on publicly
+                          verifiable information and will be determined by the
+                          market creator according to the specific rules
+                          outlined for this market.
                         </p>
                         <p className="mt-2">
-                          In cases where the outcome is ambiguous, the market creator may consult multiple reliable sources
-                          to reach a fair resolution. All decisions by the market creator regarding resolution are final.
+                          In cases where the outcome is ambiguous, the market
+                          creator may consult multiple reliable sources to reach
+                          a fair resolution. All decisions by the market creator
+                          regarding resolution are final.
                         </p>
                         <p className="mt-2">
-                          Participants should carefully review the specific resolution criteria before placing bets, as
-                          edge cases may be subject to interpretation based on the stated rules.
+                          Participants should carefully review the specific
+                          resolution criteria before placing bets, as edge cases
+                          may be subject to interpretation based on the stated
+                          rules.
                         </p>
                         <p className="mt-2">
-                          The primary resolution sources will be official information from relevant authorities,
-                          however a consensus of credible reporting may also be used when necessary.
+                          The primary resolution sources will be official
+                          information from relevant authorities, however a
+                          consensus of credible reporting may also be used when
+                          necessary.
                         </p>
                       </div>
 
@@ -396,35 +447,42 @@ export default function ExpandingCardGrid() {
 
                 {/* Bottom shadow for scrollable content */}
                 {isExpanded && (
-                  <div className="absolute bottom-[10px] left-0 right-0 h-8 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
+                  <div className="absolute bottom-[10px] left-0 right-0 h-8 bg-gradient-to-t from-neutral-900 to-transparent pointer-events-none"></div>
                 )}
               </motion.div>
 
               {/* Card Footer */}
-              <motion.div layout="position" className="flex justify-between items-center mt-4 text-gray-400 text-xs">
+              <motion.div
+                layout="position"
+                className="flex justify-between items-center mt-4 text-gray-400 text-xs"
+              >
                 <span>
                   {card.volume} {card.monthly && "Monthly"}
                 </span>
                 <div className="flex gap-1">
-                  <div className="hover:bg-slate-800 p-0.5 rounded cursor-pointer">
+                  <div className="hover:bg-neutral-800 p-0.5 rounded cursor-pointer">
                     <Gift size={15} />
                   </div>
-                  <div className="hover:bg-slate-800 p-0.5 rounded cursor-pointer">
+                  <div className="hover:bg-neutral-800 p-0.5 rounded cursor-pointer">
                     <Bookmark size={15} />
                   </div>
                   <button
                     onClick={() => toggleExpand(card.id)}
-                    className="text-gray-400 hover:text-white hover:bg-slate-800 p-0.5 rounded transition-colors flex-shrink-0 cursor-pointer"
+                    className="text-gray-400 hover:text-white hover:bg-neutral-800 p-0.5 rounded transition-colors flex-shrink-0 cursor-pointer"
                     aria-label={isExpanded ? "Collapse card" : "Expand card"}
                   >
-                    {isExpanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+                    {isExpanded ? (
+                      <Minimize2 size={15} />
+                    ) : (
+                      <Maximize2 size={15} />
+                    )}
                   </button>
                 </div>
               </motion.div>
             </motion.div>
           </motion.div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
